@@ -1,0 +1,12 @@
+Make product
+
+   ver=v0_2
+   git archive --prefix=mu2efilename/$ver/ --output=../mu2efilename-$ver.tgz ${ver:?version not set}
+   # or: git archive --prefix=mu2efilename/$ver/ --output=../mu2efilename-$ver.tgz HEAD
+
+Install product:
+
+   ver=v0_2
+   cd artexternals
+   tar xvf /path/mu2efilename-$ver.tgz
+   ups declare mu2efilename $ver -r mu2efilename/$ver -f NULL -m mu2efilename.table
