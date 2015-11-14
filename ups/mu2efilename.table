@@ -1,0 +1,10 @@
+FILE=Table
+Product=mu2efilename
+
+Flavor=ANY
+Qualifiers=""
+
+Action=setup
+   ProdDir()
+   SetupEnv()
+   EnvPrepend(PERL5LIB, ${UPS_PROD_DIR}/perllib )
