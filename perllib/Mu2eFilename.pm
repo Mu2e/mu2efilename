@@ -75,6 +75,21 @@ sub basename {
     return $res;
 }
 
+sub dataset {
+    my ($self) = @_;
+    croak "Mu2eFilename::dataset can only be called on an instance\n"
+        unless ref $self;
+
+    return join('.',
+                ($self->tier,
+                 $self->owner,
+                 $self->description,
+                 $self->configuration,
+                 ## $self->sequencer,
+                 $self->extension)
+        );
+}
+
 #----------------------------------------------------------------
 # See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
 #
@@ -196,7 +211,7 @@ an uninitialized object
 
 and set it fields "by hand".  Once all the fields are defined (and non emtpy),
 one can format the corresponding file name with $fn->basename or
-$fn->abspathname calls.
+$fn->abspathname calls.  Another call of interest is $fn->dataset.
 
 =head1 EXAMPLE
 
