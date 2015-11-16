@@ -1,7 +1,5 @@
-# Code to handle the Mu2e file name handling convention.
-# See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
-#
-# Andrei Gaponenko, 2015
+## See POD after __END__
+## You can run "perldoc /path/to/Mu2eFilename.pm" to read formatted documentation.
 
 use strict;
 use warnings;
@@ -152,6 +150,70 @@ sub abspathname {
     return $ENV{'MU2E_DATAROOT'} . '/' . $_[0]->relpathname;
 }
 
-#----------------------------------------------------------------
-
 1;
+#================================================================
+__END__
+
+
+=head1 NAME
+
+Mu2eFilename - class to handle the Mu2e file name handling convention.
+See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for an
+explanation of the basename structure.  In addition to parsing and
+manipulating basenames, this package can also produce a standardized
+absolute pathname for a Mu2e basefilename.  The absolute path
+functionality requires that $ENV{'MU2E_DATAROOT'} is set.
+
+=head1 DESCRIPTION
+
+A Mu2eFilename object contains fields:
+
+=over 4
+
+=item * tier
+
+=item * owner
+
+=item * description
+
+=item * configuration
+
+=item * sequencer
+
+=item * extension
+
+=back
+
+that are accessable by name, or settable with calls like
+
+    $fn->tier('sim');
+
+The Mu2eFilename->parse($basename) call creates a new object and set
+all the fields based on its argument.  Alternatively, one can create
+an uninitialized object
+
+    $fn = Mu2eFilename->new;
+
+and set it fields "by hand".  Once all the fields are defined (and non emtpy),
+one can format the corresponding file name with $fn->basename or
+$fn->abspathname calls.
+
+=head1 EXAMPLE
+
+    use Mu2eFilename;
+
+    my $fn = Mu2eFilename->parse('sim.mu2e.cd3-detmix-cut.1109a.000001_00001162.art');
+
+    print "Absolute pathname = ", $fn->abspathname, "\n";
+
+    $fn->owner('andr');
+
+    print "Updated basename  = ", $fn->basename, "\n";
+
+    print "Updated pathname  = ", $fn->abspathname, "\n";
+
+=head1 AUTHOR
+
+Andrei Gaponenko, 2015
+
+=cut
