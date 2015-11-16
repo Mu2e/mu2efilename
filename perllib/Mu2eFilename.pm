@@ -73,7 +73,7 @@ sub basename {
             unless defined $i and $i ne '';
         $res .= $i . '.';
     }
-
+    chop($res);
     return $res;
 }
 
