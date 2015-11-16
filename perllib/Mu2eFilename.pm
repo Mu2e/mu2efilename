@@ -16,6 +16,7 @@ use Class::Struct Mu2eFilename =>
     [ tier=>'$', owner=>'$', description=>'$',
       configuration=>'$', sequencer=>'$', extension=>'$'];
 
+#----------------------------------------------------------------
 sub parse {
     my ($class, $fn) = @_;
 
@@ -142,6 +143,13 @@ sub relpathname {
         . $self->configuration . '/'
         . $self->spreader . '/'
         . $self->basename;
+}
+
+sub abspathname {
+    croak "Environment varialbe MU2E_DATAROOT must be set before calling Mu2eFilename::abspathname "
+        unless defined $ENV{'MU2E_DATAROOT'};
+
+    return $ENV{'MU2E_DATAROOT'} . '/' . $_[0]->relpathname;
 }
 
 #----------------------------------------------------------------

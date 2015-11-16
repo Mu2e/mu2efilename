@@ -8,3 +8,4 @@ Action=setup
    ProdDir()
    SetupEnv()
    EnvPrepend(PERL5LIB, ${UPS_PROD_DIR}/perllib )
+   EnvSet(MU2E_DATAROOT, "/pnfs/mu2e/persistent/projects/production/dataroot")
