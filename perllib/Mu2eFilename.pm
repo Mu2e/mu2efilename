@@ -75,4 +75,44 @@ sub basename {
     return $res;
 }
 
+#----------------
+# See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
+#
+my %fileFamilySuffixByTier =
+    (
+     cnf => 'etc',
+     log => 'etc',
+     sim => 'sim',
+     mix => 'sim',
+     dig => 'sim',
+     mcs => 'sim',
+     nts => 'nts',
+    );
+
+sub file_family_prefix {
+    my ($self) = @_;
+    croak "Mu2eFilename::file_family_prefix can only be called on an instance\n"
+        unless ref $self;
+
+    return $self->owner eq "mu2e" ? "phy" : "usr";
+}
+
+sub file_family_suffix {
+    my ($self) = @_;
+    croak "Mu2eFilename::file_family_suffix can only be called on an instance\n"
+        unless ref $self;
+
+    my $res = $fileFamilySuffixByTier{$self->tier};
+
+    croak 'Unknown data tier "' . $self->tier . '"'
+        unless defined $res; # $fileFamilySuffixByTier{$self->tier};
+
+    return $res;
+}
+
+sub file_family {
+    my ($self) = @_;
+    return $self->file_family_prefix . '-' . $self->file_family_suffix;
+}
+
 1;
