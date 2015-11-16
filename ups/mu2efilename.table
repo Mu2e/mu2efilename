@@ -11,6 +11,6 @@ Action=setup
 
    EnvSet(MU2E_DATAROOT, "/pnfs/mu2e/persistent/projects/production/dataroot")
 
-   addAlias(mu2eabsname, "echo %s |awk -F. '{fn=$0; cmd="(echo -n "fn"|sha256sum)"; cmd|getline hash; split(hash, hh, ""); tier=$1; ffdb["sim"] = ffdb["mcs"] = ffdb["mix"] = ffdb["dig"] = "sim"; ffdb["cnf"] = ffdb["log"] = "etc"; ffdb["nts"] = "nts"; ffsuffix=ffdb[tier]; owner=$2; ffprefix=(owner=="mu2e")?"phy":"usr"; print ENVIRON["MU2E_DATAROOT"]"/"ffprefix"-"ffsuffix"/"tier"/"owner"/"$3"/"$4"/"hh[1]hh[2]"/"hh[3]hh[4]"/"hh[5]hh[6]"/"$0}'")
+   addAlias(mu2eabsname, "echo %s |awk -F. '/\//{print "Error: mu2eabsname argument must contain no slashes."  > "/dev/stderr"; exit 1;}; !/\//{fn=$0; cmd="(echo -n "fn"|sha256sum)"; cmd|getline hash; split(hash, hh, ""); tier=$1; ffdb["sim"] = ffdb["mcs"] = ffdb["mix"] = ffdb["dig"] = "sim"; ffdb["cnf"] = ffdb["log"] = "etc"; ffdb["nts"] = "nts"; ffsuffix=ffdb[tier]; owner=$2; ffprefix=(owner=="mu2e")?"phy":"usr"; print ENVIRON["MU2E_DATAROOT"]"/"ffprefix"-"ffsuffix"/"tier"/"owner"/"$3"/"$4"/"hh[1]hh[2]"/"hh[3]hh[4]"/"hh[5]hh[6]"/"$0}'")
 
    sourceReqCheck(${UPS_PROD_DIR}/unittest/test.sh, UPS_ENV)
