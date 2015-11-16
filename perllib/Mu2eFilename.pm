@@ -8,6 +8,7 @@ use warnings;
 
 package Mu2eFilename;
 use Exporter qw( import );
+use Digest;
 use Carp;
 use Data::Dumper;
 
@@ -75,7 +76,7 @@ sub basename {
     return $res;
 }
 
-#----------------
+#----------------------------------------------------------------
 # See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
 #
 my %fileFamilySuffixByTier =
@@ -114,5 +115,35 @@ sub file_family {
     my ($self) = @_;
     return $self->file_family_prefix . '-' . $self->file_family_suffix;
 }
+
+#----------------------------------------------------------------
+# A "spreader" is a string that defines a set of nested subdirectories
+# that are used to spread dataset files among several dirs to avoid
+# overcrowding a single directory.
+
+sub spreader {
+    my $bn = $_[0]->basename;
+    my $dig = Digest->new('SHA-256');
+    $dig->add($bn);
+    my $hash = $dig->hexdigest;
+    my @hh = split //, $hash, 7;
+    return $hh[0].$hh[1].'/'.$hh[2].$hh[3].'/'.$hh[4].$hh[5];
+}
+
+#----------------------------------------------------------------
+# relative to the dataroot
+sub relpathname {
+    my ($self) = @_;
+
+    return $self->file_family . '/'
+        . $self->tier . '/'
+        . $self->owner . '/'
+        . $self->description . '/'
+        . $self->configuration . '/'
+        . $self->spreader . '/'
+        . $self->basename;
+}
+
+#----------------------------------------------------------------
 
 1;
