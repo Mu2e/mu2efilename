@@ -141,7 +141,7 @@ sub spreader {
     $dig->add($bn);
     my $hash = $dig->hexdigest;
     my @hh = split //, $hash, 7;
-    return $hh[0].$hh[1].'/'.$hh[2].$hh[3].'/'.$hh[4].$hh[5];
+    return $hh[0].$hh[1].'/'.$hh[2].$hh[3];
 }
 
 #----------------------------------------------------------------
