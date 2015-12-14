@@ -158,11 +158,25 @@ sub relpathname {
         . $self->basename;
 }
 
-sub abspathname {
-    croak "Environment varialbe MU2E_DATAROOT must be set before calling Mu2eFilename::abspathname "
-        unless defined $ENV{'MU2E_DATAROOT'};
+sub abspathname_scratch {
+    croak "Environment variable MU2E_DSROOT_SCRATCH must be set before calling Mu2eFilename::abspathname_scratch "
+        unless defined $ENV{'MU2E_DSROOT_SCRATCH'};
 
-    return $ENV{'MU2E_DATAROOT'} . '/' . $_[0]->relpathname;
+    return $ENV{'MU2E_DSROOT_SCRATCH'} . '/' . $_[0]->relpathname;
+}
+
+sub abspathname_disk {
+    croak "Environment variable MU2E_DSROOT_DISK must be set before calling Mu2eFilename::abspathname_disk "
+        unless defined $ENV{'MU2E_DSROOT_DISK'};
+
+    return $ENV{'MU2E_DSROOT_DISK'} . '/' . $_[0]->relpathname;
+}
+
+sub abspathname_tape {
+    croak "Environment variable MU2E_DSROOT_TAPE must be set before calling Mu2eFilename::abspathname_tape "
+        unless defined $ENV{'MU2E_DSROOT_TAPE'};
+
+    return $ENV{'MU2E_DSROOT_TAPE'} . '/' . $_[0]->relpathname;
 }
 
 1;
@@ -176,8 +190,9 @@ Mu2eFilename - class to handle the Mu2e file name handling convention.
 See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for an
 explanation of the basename structure.  In addition to parsing and
 manipulating basenames, this package can also produce a standardized
-absolute pathname for a Mu2e basefilename.  The absolute path
-functionality requires that $ENV{'MU2E_DATAROOT'} is set.
+absolute pathnames for a Mu2e basefilename.  The absolute path
+functionality requires that environment variables MU2E_DSROOT_TAPE,
+MU2E_DSROOT_DISK, and MU2E_DSROOT_SCRATCH are set.
 
 =head1 DESCRIPTION
 
@@ -211,7 +226,8 @@ an uninitialized object
 
 and set it fields "by hand".  Once all the fields are defined (and non emtpy),
 one can format the corresponding file name with $fn->basename or
-$fn->abspathname calls.  Another call of interest is $fn->dataset.
+$fn->abspathname_tape, $fn->abspathname_disk, $fn->abspathname_scratch calls.
+Another call of interest is $fn->dataset.
 
 =head1 EXAMPLE
 
@@ -219,13 +235,13 @@ $fn->abspathname calls.  Another call of interest is $fn->dataset.
 
     my $fn = Mu2eFilename->parse('sim.mu2e.cd3-detmix-cut.1109a.000001_00001162.art');
 
-    print "Absolute pathname = ", $fn->abspathname, "\n";
+    print "Absolute pathname for disk backed file = ", $fn->abspathname_disk, "\n";
 
     $fn->owner('andr');
 
     print "Updated basename  = ", $fn->basename, "\n";
 
-    print "Updated pathname  = ", $fn->abspathname, "\n";
+    print "Updated disk pathname  = ", $fn->abspathname_disk, "\n";
 
 =head1 AUTHOR
 

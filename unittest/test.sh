@@ -7,11 +7,28 @@
 
 
 while read line; do
-    shres=`mu2eabsname $line`
-    perlres=`${UPS_PROD_DIR}/unittest/mu2eabsname.pl $line`
-
+    shres=`mu2eabsname_tape $line`
+    perlres=`${UPS_PROD_DIR}/unittest/mu2eabsname.pl --tape $line`
     if [[ x"$perlres" != x"$shres" ]]; then
-        echo "ERROR: Mu2eFilename consistency check failed" >&2
+        echo "ERROR: Mu2eFilename consistency check failed for -tape" >&2
+        echo "Mu2eFilename from shell: $shres" >&2
+        echo "Mu2eFilename from  perl: $perlres" >&2
+        return 1
+    fi
+
+    shres=`mu2eabsname_disk $line`
+    perlres=`${UPS_PROD_DIR}/unittest/mu2eabsname.pl --disk $line`
+    if [[ x"$perlres" != x"$shres" ]]; then
+        echo "ERROR: Mu2eFilename consistency check failed for -disk" >&2
+        echo "Mu2eFilename from shell: $shres" >&2
+        echo "Mu2eFilename from  perl: $perlres" >&2
+        return 1
+    fi
+
+    shres=`mu2eabsname_scratch $line`
+    perlres=`${UPS_PROD_DIR}/unittest/mu2eabsname.pl --scratch $line`
+    if [[ x"$perlres" != x"$shres" ]]; then
+        echo "ERROR: Mu2eFilename consistency check failed for -scratch" >&2
         echo "Mu2eFilename from shell: $shres" >&2
         echo "Mu2eFilename from  perl: $perlres" >&2
         return 1
