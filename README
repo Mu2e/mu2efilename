@@ -1,4 +1,10 @@
-This package provides a Mu2eFilename Perl package for parsing and manipulating
-standard Mu2e file names.  It also provides a "mu2eabsname" command for use
-in shell scripts.  See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
-for file naming conventions.
+This package provides Mu2eFilename and Mu2eDSName Perl packages for
+parsing and manipulating Mu2e file and dataset names.  See
+http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for file naming
+conventions.
+
+This package also provides authoritative definitions of standard
+absolute pathnames for tape, persistent disk, and scratch based
+Mu2e dataset files.  Absolute pathnames can be obtained either
+through the Mu2eFilename module, or through shell functions
+mu2eabsname_tape, mu2eabsname_disk, mu2eabsname_scratch.
