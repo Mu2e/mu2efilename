@@ -8,18 +8,21 @@ package Mu2eFilename;
 use Exporter qw( import );
 use Digest;
 use Carp;
-use Data::Dumper;
+use Mu2eFNBase;
+use Mu2eDSName; # NB: Mu2eFilename and Mu2eDSName use each other, this is non-circular and fine
 
-use Class::Struct Mu2eFilename =>
+use Class::Struct Mu2eFilenameFields =>
     [ tier=>'$', owner=>'$', description=>'$',
       configuration=>'$', sequencer=>'$', extension=>'$'];
+
+use base qw(Mu2eFNBase Mu2eFilenameFields);
 
 #----------------------------------------------------------------
 sub parse {
     my ($class, $fn) = @_;
 
-    croak "Error: Mu2eFilename::parse() requires a base file name without a path.  Got: '$fn'\n"
-        if $fn =~ m|/|;
+    croak "Error: Mu2e dataset name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$fn'\n"
+        unless $fn =~ /^([.\w-]*)$/;
 
     my ($tier, $owner, $description, $configuration, $seq, $ext, $extra) = split(/\./, $fn);
 
@@ -58,76 +61,22 @@ sub clone {
     return $copy;
 }
 
-sub basename {
-    my ($self) = @_;
-    croak "Mu2eFilename::basename can only be called on an instance\n"
-        unless ref $self;
-
-    my $res = '';
-
-    foreach my $i (@$self) {
-        croak "Error: Mu2eFilename::basename() is called on an under-defined instance."
-            . " Empty field after : \"" . $res . '"'
-            unless defined $i and $i ne '';
-        $res .= $i . '.';
-    }
-    chop($res);
-    return $res;
-}
+sub basename  { return $_[0]->_name; }
 
 sub dataset {
     my ($self) = @_;
     croak "Mu2eFilename::dataset can only be called on an instance\n"
         unless ref $self;
 
-    return join('.',
-                ($self->tier,
-                 $self->owner,
-                 $self->description,
-                 $self->configuration,
-                 ## $self->sequencer,
-                 $self->extension)
+    my $ds =  Mu2eDSName->new(
+        tier=>$self->tier,
+        owner=>$self->owner,
+        description=>$self->description,
+        configuration=>$self->configuration,
+        extension=>$self->extension,
         );
-}
 
-#----------------------------------------------------------------
-# See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
-#
-my %fileFamilySuffixByTier =
-    (
-     cnf => 'etc',
-     log => 'etc',
-     sim => 'sim',
-     mix => 'sim',
-     dig => 'sim',
-     mcs => 'sim',
-     nts => 'nts',
-    );
-
-sub file_family_prefix {
-    my ($self) = @_;
-    croak "Mu2eFilename::file_family_prefix can only be called on an instance\n"
-        unless ref $self;
-
-    return $self->owner eq "mu2e" ? "phy" : "usr";
-}
-
-sub file_family_suffix {
-    my ($self) = @_;
-    croak "Mu2eFilename::file_family_suffix can only be called on an instance\n"
-        unless ref $self;
-
-    my $res = $fileFamilySuffixByTier{$self->tier};
-
-    croak 'Unknown data tier "' . $self->tier . '"'
-        unless defined $res; # $fileFamilySuffixByTier{$self->tier};
-
-    return $res;
-}
-
-sub file_family {
-    my ($self) = @_;
-    return $self->file_family_prefix . '-' . $self->file_family_suffix;
+    return $ds;
 }
 
 #----------------------------------------------------------------
@@ -189,7 +138,7 @@ __END__
 Mu2eFilename - class to handle the Mu2e file name handling convention.
 See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for an
 explanation of the basename structure.  In addition to parsing and
-manipulating basenames, this package can also produce a standardized
+manipulating basenames, this package can also produce standardized
 absolute pathnames for a Mu2e basefilename.  The absolute path
 functionality requires that environment variables MU2E_DSROOT_TAPE,
 MU2E_DSROOT_DISK, and MU2E_DSROOT_SCRATCH are set.
@@ -214,7 +163,7 @@ A Mu2eFilename object contains fields:
 
 =back
 
-that are accessable by name, or settable with calls like
+that are accessible by name, or settable with calls like
 
     $fn->tier('sim');
 
@@ -224,24 +173,34 @@ an uninitialized object
 
     $fn = Mu2eFilename->new;
 
-and set it fields "by hand".  Once all the fields are defined (and non emtpy),
-one can format the corresponding file name with $fn->basename or
-$fn->abspathname_tape, $fn->abspathname_disk, $fn->abspathname_scratch calls.
-Another call of interest is $fn->dataset.
+and set its fields "by hand", or create a partly or fully initialized
+object by adding arguments (values of the fields, in order) to the
+"new" call above.  A Mu2eFilename object can also be created as a
+clone() of an existing object.
+
+Once all the fields are defined (and non empty), one can format the
+corresponding file name with $fn->basename or $fn->abspathname_tape,
+$fn->abspathname_disk, $fn->abspathname_scratch calls.
+
+Another call of interest is $fn->dataset.  It can be used on objects
+with undefined sequencer, and returns a Mu2eDSName object.
 
 =head1 EXAMPLE
 
     use Mu2eFilename;
 
-    my $fn = Mu2eFilename->parse('sim.mu2e.cd3-detmix-cut.1109a.000001_00001162.art');
+    my $fn1 = Mu2eFilename->parse('sim.mu2e.cd3-detmix-cut.1109a.000001_00001162.art');
 
-    print "Absolute pathname for disk backed file = ", $fn->abspathname_disk, "\n";
+    print "Absolute pathname for a disk backed file = ", $fn1->abspathname_disk, "\n";
 
-    $fn->owner('andr');
+    my $fn2 = $fn1->clone();
+    $fn2->owner('andr');
 
-    print "Updated basename  = ", $fn->basename, "\n";
+    print "Updated basename  = ", $fn2->basename, "\n";
 
-    print "Updated disk pathname  = ", $fn->abspathname_disk, "\n";
+    print "Updated disk pathname  = ", $fn2->abspathname_disk, "\n";
+
+    print "Updated dataset name  = ", $fn2->dataset->dsname, "\n";
 
 =head1 AUTHOR
 
