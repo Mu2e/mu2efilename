@@ -67,4 +67,15 @@ sub file_family {
     return $self->file_family_prefix . '-' . $self->file_family_suffix;
 }
 
+# dataset directory relative to a dataroot
+sub reldsdir {
+    my ($self) = @_;
+
+    return $self->file_family . '/'
+        . $self->tier . '/'
+        . $self->owner . '/'
+        . $self->description . '/'
+        . $self->configuration;
+}
+
 1;
