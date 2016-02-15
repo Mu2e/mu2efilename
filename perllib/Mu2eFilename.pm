@@ -95,14 +95,20 @@ sub spreader {
 
 #----------------------------------------------------------------
 # relative to the dataroot
-sub relpathname {
+sub reldsdir {
     my ($self) = @_;
 
     return $self->file_family . '/'
         . $self->tier . '/'
         . $self->owner . '/'
         . $self->description . '/'
-        . $self->configuration . '/'
+        . $self->configuration;
+}
+
+# relative to the dataroot
+sub relpathname {
+    my ($self) = @_;
+    return $self->reldsdir() . '/'
         . $self->spreader . '/'
         . $self->basename;
 }
