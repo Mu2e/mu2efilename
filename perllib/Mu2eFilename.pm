@@ -102,25 +102,22 @@ sub relpathname {
         . $self->basename;
 }
 
-sub abspathname_scratch {
-    croak "Environment variable MU2E_DSROOT_SCRATCH must be set before calling Mu2eFilename::abspathname_scratch "
-        unless defined $ENV{'MU2E_DSROOT_SCRATCH'};
+sub abspathname {
+    my ($self, $loc) = @_;
+    return $self->location_root($loc) . '/' .  $self->relpathname;
+}
 
-    return $ENV{'MU2E_DSROOT_SCRATCH'} . '/' . $_[0]->relpathname;
+# legacy interfaces
+sub abspathname_scratch {
+    return $_[0]->abspathname('scratch');
 }
 
 sub abspathname_disk {
-    croak "Environment variable MU2E_DSROOT_DISK must be set before calling Mu2eFilename::abspathname_disk "
-        unless defined $ENV{'MU2E_DSROOT_DISK'};
-
-    return $ENV{'MU2E_DSROOT_DISK'} . '/' . $_[0]->relpathname;
+    return $_[0]->abspathname('disk');
 }
 
 sub abspathname_tape {
-    croak "Environment variable MU2E_DSROOT_TAPE must be set before calling Mu2eFilename::abspathname_tape "
-        unless defined $ENV{'MU2E_DSROOT_TAPE'};
-
-    return $ENV{'MU2E_DSROOT_TAPE'} . '/' . $_[0]->relpathname;
+    return $_[0]->abspathname('tape');
 }
 
 1;
@@ -174,8 +171,10 @@ object by adding arguments (values of the fields, in order) to the
 clone() of an existing object.
 
 Once all the fields are defined (and non empty), one can format the
-corresponding file name with $fn->basename or $fn->abspathname_tape,
-$fn->abspathname_disk, $fn->abspathname_scratch calls.
+corresponding file name with $fn->basename or $fn->abspathname($loc)
+where $loc is one of the standard locations returned by
+$fn->standard_locations().  Legacy methods $fn->abspathname_tape,
+$fn->abspathname_disk, $fn->abspathname_scratch are also available.
 
 Another call of interest is $fn->dataset.  It can be used on objects
 with undefined sequencer, and returns a Mu2eDSName object.
