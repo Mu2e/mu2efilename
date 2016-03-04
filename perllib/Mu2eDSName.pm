@@ -130,6 +130,14 @@ clone() of an existing object.
 Once all the fields are defined (and non empty), one can format the
 corresponding dataset name with $ds->dsname.
 
+A list of symbolic names of standard dataset locations (like 'disk',
+'tape', etc.) is returned by the $ds->standard_locations() call.  The
+filesystem path to a given location is given by
+$ds->location_root($location_name).  The $ds->reldsdir() method
+returns the relative dataset path with respect to a 'location root'
+directory, and $ds->absdsdir($locname) returns the absolute filesystem
+path for this dataset in a given location.
+
 =head1 EXAMPLE
 
     use Mu2eDSName;
