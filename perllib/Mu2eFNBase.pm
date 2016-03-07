@@ -32,11 +32,13 @@ sub _name {
 #
 my %fileFamilySuffixByTier =
     (
+     bck => 'etc',
      cnf => 'etc',
+     dig => 'sim',
+     etc => 'etc',
      log => 'etc',
      sim => 'sim',
      mix => 'sim',
-     dig => 'sim',
      mcs => 'sim',
      nts => 'nts',
     );
