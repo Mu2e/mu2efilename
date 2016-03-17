@@ -61,6 +61,31 @@ sub from_reldsdir {
     return $self;
 }
 
+#----------------------------------------------------------------
+sub from_absdsdir {
+    my ($class, $dir) = @_;
+    $dir =~ s|/+$||;
+
+    my $reldir;
+
+  LOCLOOP:
+    foreach my $dsl (Mu2eFNBase::standard_locations()) {
+        my $locpath = Mu2eFNBase::location_root($dsl);
+
+        my $tmp = $dir;
+        if($tmp =~ s|^$locpath/||) {
+            $reldir = $tmp;
+            last LOCLOOP;
+        }
+    }
+
+    croak "Error: path '$dir' does not correspond to a known dataset location\n"
+        unless defined $reldir;
+
+    return $class->from_reldsdir($reldir);
+}
+
+#----------------------------------------------------------------
 sub clone {
     my ($self) = @_;
 
