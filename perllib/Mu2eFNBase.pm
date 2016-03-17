@@ -77,7 +77,8 @@ sub reldsdir {
         . $self->tier . '/'
         . $self->owner . '/'
         . $self->description . '/'
-        . $self->configuration;
+        . $self->configuration . '/'
+        . $self->extension;
 }
 
 # Mu2e dataset locations:  a map of symbolic name => filesystem path

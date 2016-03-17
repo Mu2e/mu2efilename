@@ -37,6 +37,30 @@ sub parse {
     return $self;
 }
 
+#----------------------------------------------------------------
+sub from_reldsdir {
+    my ($class, $rds) = @_;
+
+    my ($family, $tier, $owner, $description, $configuration, $ext, $extra) = split('/', $rds);
+
+    croak "Error: from_reldsdir(): too many fields in '$rds'\n" if defined $extra;
+    croak "Error: from_reldsdir(): too few fields in '$rds'\n" if not defined $ext;
+
+    my $self = $class->new(
+        tier=>$tier,
+        owner=>$owner,
+        description=>$description,
+        configuration=>$configuration,
+        extension=>$ext,
+        );
+
+    my $expected_family = $self->file_family;
+    croak "Error: from_reldsdir(): file family conflict for '$rds': '$expected_family' != '$family' \n"
+        unless $family eq $expected_family;
+
+    return $self;
+}
+
 sub clone {
     my ($self) = @_;
 
