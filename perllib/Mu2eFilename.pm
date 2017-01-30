@@ -21,7 +21,7 @@ use base qw(Mu2eFNBase Mu2eFilenameFields);
 sub parse {
     my ($class, $fn) = @_;
 
-    croak "Error: Mu2e dataset name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$fn'\n"
+    croak "Error: Mu2e file name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$fn'\n"
         unless $fn =~ /^([.\w-]*)$/;
 
     my ($tier, $owner, $description, $configuration, $seq, $ext, $extra) = split(/\./, $fn);
