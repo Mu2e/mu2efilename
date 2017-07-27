@@ -8,15 +8,8 @@ Action=setup
    ProdDir()
    SetupEnv()
    EnvPrepend(PERL5LIB, ${UPS_PROD_DIR}/perllib )
+   pathPrepend(PATH, ${UPS_PROD_DIR}/bin)
 
    EnvSet(MU2E_DSROOT_SCRATCH, "/pnfs/mu2e/scratch/datasets")
    EnvSet(MU2E_DSROOT_DISK,    "/pnfs/mu2e/persistent/datasets")
    EnvSet(MU2E_DSROOT_TAPE,    "/pnfs/mu2e/tape")
-
-   addAlias(mu2eabsname_tape, "if [[ $# -eq 0 ]]; then awk -F. '/\//{print "Error: '${FUNCNAME[0]}' argument must contain no slashes."  > "/dev/stderr"; exit 1;}; !/\//{ if(NF!=6) {print "Error: '${FUNCNAME[0]}' argument must contain 6 dot-separated fields" > "/dev/stderr"; exit 1; }; fn=$0; cmd="(echo -n "fn"|sha256sum)"; cmd|getline hash; close(cmd); split(hash, hh, ""); tier=$1; ffdb["sim"] = ffdb["mcs"] = ffdb["mix"] = ffdb["dig"] = "sim"; ffdb["cnf"] = ffdb["log"] = ffdb["bck"] = "etc"; ffdb["nts"] = "nts"; ffsuffix=ffdb[tier]; if(ffsuffix == "") {print "Error: unknown data tier ",tier  > "/dev/stderr"; exit 1;}; owner=$2; ffprefix=(owner=="mu2e")?"phy":"usr"; print ENVIRON["MU2E_DSROOT_TAPE"]"/"ffprefix"-"ffsuffix"/"tier"/"owner"/"$3"/"$4"/"$6"/"hh[1]hh[2]"/"hh[3]hh[4]"/"$0}'; else echo ${FUNCNAME[0]} usage: provide basename of Mu2e files on STDIN >&2; return 1; fi")
-
-   addAlias(mu2eabsname_disk, "if [[ $# -eq 0 ]]; then awk -F. '/\//{print "Error: '${FUNCNAME[0]}' argument must contain no slashes."  > "/dev/stderr"; exit 1;}; !/\//{ if(NF!=6) {print "Error: '${FUNCNAME[0]}' argument must contain 6 dot-separated fields" > "/dev/stderr"; exit 1; }; fn=$0; cmd="(echo -n "fn"|sha256sum)"; cmd|getline hash; close(cmd); split(hash, hh, ""); tier=$1; ffdb["sim"] = ffdb["mcs"] = ffdb["mix"] = ffdb["dig"] = "sim"; ffdb["cnf"] = ffdb["log"] = ffdb["bck"] = "etc"; ffdb["nts"] = "nts"; ffsuffix=ffdb[tier]; if(ffsuffix == "") {print "Error: unknown data tier ",tier  > "/dev/stderr"; exit 1;}; owner=$2; ffprefix=(owner=="mu2e")?"phy":"usr"; print ENVIRON["MU2E_DSROOT_DISK"]"/"ffprefix"-"ffsuffix"/"tier"/"owner"/"$3"/"$4"/"$6"/"hh[1]hh[2]"/"hh[3]hh[4]"/"$0}'; else echo ${FUNCNAME[0]} usage: provide basename of Mu2e files on STDIN >&2; return 1; fi")
-
-   addAlias(mu2eabsname_scratch, "if [[ $# -eq 0 ]]; then awk -F. '/\//{print "Error: '${FUNCNAME[0]}' argument must contain no slashes."  > "/dev/stderr"; exit 1;}; !/\//{ if(NF!=6) {print "Error: '${FUNCNAME[0]}' argument must contain 6 dot-separated fields" > "/dev/stderr"; exit 1; }; fn=$0; cmd="(echo -n "fn"|sha256sum)"; cmd|getline hash; close(cmd); split(hash, hh, ""); tier=$1; ffdb["sim"] = ffdb["mcs"] = ffdb["mix"] = ffdb["dig"] = "sim"; ffdb["cnf"] = ffdb["log"] = ffdb["bck"] = "etc"; ffdb["nts"] = "nts"; ffsuffix=ffdb[tier]; if(ffsuffix == "") {print "Error: unknown data tier ",tier  > "/dev/stderr"; exit 1;}; owner=$2; ffprefix=(owner=="mu2e")?"phy":"usr"; print ENVIRON["MU2E_DSROOT_SCRATCH"]"/"ffprefix"-"ffsuffix"/"tier"/"owner"/"$3"/"$4"/"$6"/"hh[1]hh[2]"/"hh[3]hh[4]"/"$0}'; else echo ${FUNCNAME[0]} usage: provide basename of Mu2e files on STDIN >&2; return 1; fi")
-
-   sourceReqCheck(${UPS_PROD_DIR}/unittest/test.sh, UPS_ENV)

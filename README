@@ -4,7 +4,8 @@ http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for file naming
 conventions.
 
 This package also provides authoritative definitions of standard
-absolute pathnames for tape, persistent disk, and scratch based
-Mu2e dataset files.  Absolute pathnames can be obtained either
-through the Mu2eFilename module, or through shell functions
-mu2eabsname_tape, mu2eabsname_disk, mu2eabsname_scratch.
+absolute pathnames for tape, persistent disk, and scratch based Mu2e
+dataset files.  Absolute pathnames can be obtained through the
+Mu2eFilename module.  The mu2eabsname_tape, mu2eabsname_disk, and
+mu2eabsname_scratch utilities provide command line access to the
+functionality.
