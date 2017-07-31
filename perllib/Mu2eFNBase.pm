@@ -28,45 +28,57 @@ sub _name {
 }
 
 #----------------------------------------------------------------
-# See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
-#
-my %fileFamilySuffixByTier =
+# See https://mu2ewiki.fnal.gov/wiki/FileFamilies
+
+# data tier to file family mapping for mu2e-owned datasets
+my %dataTierToFileFamilyMapMu2e =
     (
-     bck => 'etc',
-     cnf => 'etc',
-     dig => 'sim',
-     etc => 'etc',
-     log => 'etc',
-     sim => 'sim',
-     mix => 'sim',
-     mcs => 'sim',
-     nts => 'nts',
+     cnf => 'phy-etc',
+     sim => 'phy-sim',
+     mix => 'phy-sim',
+     dig => 'phy-sim',
+     mcs => 'phy-sim',
+     nts => 'phy-nts',
+     log => 'phy-etc',
+     bck => 'phy-etc',
+     etc => 'phy-etc',
     );
 
-sub file_family_prefix {
-    my ($self) = @_;
-    croak "Mu2eFNBase::file_family_prefix can only be called on an instance\n"
-        unless ref $self;
-
-    return $self->owner eq "mu2e" ? "phy" : "usr";
-}
-
-sub file_family_suffix {
-    my ($self) = @_;
-    croak "Mu2eFNBase::file_family_suffix can only be called on an instance\n"
-        unless ref $self;
-
-    my $res = $fileFamilySuffixByTier{$self->tier};
-
-    croak 'Unknown data tier "' . $self->tier . '"'
-        unless defined $res;
-
-    return $res;
-}
+my %dataTierToFileFamilyMapUsr =
+    (
+     raw => 'tst-cos',
+     rec => 'tst-cos',
+     ntd => 'tst-cos',
+     ext => 'tst-cos',
+     rex => 'tst-cos',
+     xnt => 'tst-cos',
+     cnf => 'usr-etc',
+     sim => 'usr-sim',
+     mix => 'usr-sim',
+     dig => 'usr-sim',
+     mcs => 'usr-sim',
+     nts => 'usr-nts',
+     log => 'usr-etc',
+     bck => 'usr-etc',
+     etc => 'usr-etc',
+    );
 
 sub file_family {
     my ($self) = @_;
-    return $self->file_family_prefix . '-' . $self->file_family_suffix;
+    croak "Mu2eFNBase::file_family can only be called on an instance\n"
+        unless ref $self;
+
+    my ($mapping, $user) = $self->owner eq "mu2e" ?
+        (\%dataTierToFileFamilyMapMu2e, 'official Mu2e') :
+        (\%dataTierToFileFamilyMapUsr, 'user');
+
+    my $res = $mapping->{$self->tier};
+
+    croak 'File family for data tier "' . $self->tier . '" of ' .
+        $user . ' files is not defined.'
+        unless defined $res;
+
+    return $res;
 }
 
 # dataset directory relative to a dataroot
