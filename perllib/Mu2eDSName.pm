@@ -16,24 +16,38 @@ use base qw(Mu2eFNBase Mu2eDSNameFields);
 
 #----------------------------------------------------------------
 sub parse {
-    my ($class, $ds) = @_;
+    my ($class, $ds, $inopts) = @_;
+    my $opts = $inopts // {};
+    my $nothrow = $$opts{'nothrow'} // 0;
 
-    croak "Error: Mu2e dataset name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$ds'\n"
-        unless $ds =~ /^([.\w-]*)$/;
+    my $self;
+    if($ds =~ /^([.\w-]*)$/) {
 
-    my ($tier, $owner, $description, $configuration, $ext, $extra) = split(/\./, $ds);
+        my ($tier, $owner, $description, $configuration, $ext, $extra) = split(/\./, $ds);
 
-    croak "Error parsing Mu2e dataset name '$ds': too many fields\n" if defined $extra;
-    croak "Error parsing Mu2e dataset name '$ds': too few fields\n" if not defined $ext;
+        if(defined $extra) {
+            croak "Error parsing Mu2e dataset name '$ds': too many fields\n" unless $nothrow;
+        }
+        else {
+            if(not defined $ext) {
+                croak "Error parsing Mu2e dataset name '$ds': too few fields\n" unless $nothrow;
+            }
+            else {
+                $self = $class->new(
+                    tier=>$tier,
+                    owner=>$owner,
+                    description=>$description,
+                    configuration=>$configuration,
+                    extension=>$ext,
+                    );
+            }
+        }
 
-    my $self = $class->new(
-        tier=>$tier,
-        owner=>$owner,
-        description=>$description,
-        configuration=>$configuration,
-        extension=>$ext,
-        );
-
+    }
+    else {
+        croak "Error: Mu2e dataset name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$ds'\n"
+            unless $nothrow;
+    }
     return $self;
 }
 

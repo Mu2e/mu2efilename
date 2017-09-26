@@ -19,25 +19,38 @@ use base qw(Mu2eFNBase Mu2eFilenameFields);
 
 #----------------------------------------------------------------
 sub parse {
-    my ($class, $fn) = @_;
+    my ($class, $fn, $inopts) = @_;
+    my $opts = $inopts // {};
+    my $nothrow = $$opts{'nothrow'} // 0;
 
-    croak "Error: Mu2e file name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$fn'\n"
-        unless $fn =~ /^([.\w-]*)$/;
+    my $self;
+    if($fn =~ /^([.\w-]*)$/) {
 
-    my ($tier, $owner, $description, $configuration, $seq, $ext, $extra) = split(/\./, $fn);
-
-    croak "Error parsing Mu2e file name '$fn': too many fields\n" if defined $extra;
-    croak "Error parsing Mu2e file name '$fn': too few fields\n" if not defined $ext;
-
-    my $self = $class->new(
-        tier=>$tier,
-        owner=>$owner,
-        description=>$description,
-        configuration=>$configuration,
-        sequencer=>$seq,
-        extension=>$ext,
-        );
-
+        my ($tier, $owner, $description, $configuration, $seq, $ext, $extra) = split(/\./, $fn);
+        if(defined $extra) {
+            croak "Error parsing Mu2e file name '$fn': too many fields\n" unless $nothrow;
+        }
+        else {
+            if(not defined $ext) {
+                croak "Error parsing Mu2e file name '$fn': too few fields\n"
+                    unless $nothrow;
+            }
+            else {
+                $self = $class->new(
+                    tier=>$tier,
+                    owner=>$owner,
+                    description=>$description,
+                    configuration=>$configuration,
+                    sequencer=>$seq,
+                    extension=>$ext,
+                    );
+            }
+        }
+    }
+    else {
+        croak "Error: Mu2e file name may contain only alphanumeric characters, hyphens, underscores, and periods. Got: '$fn'\n"
+            unless $nothrow;
+    }
     return $self;
 }
 
