@@ -40,7 +40,7 @@ printJson() {
             shift
             ;;
 
-        --no-parents) parentfile="";;
+        --no-parents) parentfile="/dev/null";;
         *) printJsonError ; exit 1 ;;
     esac
     shift
@@ -97,15 +97,13 @@ EOF
     "dh.sha256": "$(sha256sum $inputfile|cut -f1 -d' ')",
 EOF
 
-    # A list of parents, if provided
-    if [[ -n "$parentfile" ]]; then
-        sep=" "
-        echo  '    "parents": ['
-        (while read line; do
-            echo '      '$sep' "'$line'"'; sep=,
-            done ) < "$parentfile"
-        echo '    ],'
-    fi
+    # A list of parents
+    sep=" "
+    echo  '    "parents": ['
+    (while read line; do
+        echo '      '$sep' "'$line'"'; sep=,
+        done ) < "$parentfile"
+    echo '    ],'
 
     # For art files only, run/subrun/event info determined from file content.
     ext="${fnfields[5]}"
