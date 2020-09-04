@@ -105,6 +105,7 @@ EOF
         done ) < "$parentfile"
     echo '    ],'
 
+    #================================================================
     # For art files only, run/subrun/event info determined from file content.
     ext="${fnfields[5]}"
     if [[ $ext == art ]]; then
@@ -189,8 +190,47 @@ It is needed to extract metadata from art files.
 Art not setup or its version is not compatible.
 EOF
             exit 3
+        fi # file_info_dumper
+
+        #----------------------------------------------------------------
+        # Another piece of data specific to art files is GenEventCount.
+        # It is optional; if there is no GenEventCount in a file's SubRun
+        # the metadata field will not be created.
+
+        fcl=$(mktemp)
+        out=$(mktemp)
+        cat > $fcl <<EOF
+process_name: genCountPrint
+source: { module_type: RootInput }
+physics: {
+   analyzers: {
+      genCountPrint: { module_type: GenEventCountReader makeHistograms: false }
+   }
+   e1: [ genCountPrint ]
+   end_paths: [ e1 ]
+}
+EOF
+        if mu2e -c $fcl $inputfile > $out; then
+            gencount=$(awk '/GenEventCount total:/{print $3}' $out)
+            if [[ -n "$gencount" ]]; then
+                echo '    "dh.gencount": '$gencount','
+            else
+                echo "Error: GenEventCount status zero but no value" >&2
+                exit 4
+            fi
+        else
+            # Is the record missing, or did something else go wrong?
+            if ! grep -q 'no *GenEventCount *record' $out; then
+                echo "Error getting GenEventCount information" >&2
+                exit 4
+            fi
         fi
-    fi
+        rm -f $fcl $out
+
+        #----------------------------------------------------------------
+
+    fi # $ext == art
+    #================================================================
 
     # The fixed ending.
     cat<<EOF
