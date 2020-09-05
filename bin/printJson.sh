@@ -149,18 +149,20 @@ BEGIN{
 END {
   print "    \"event_count\": "eventCount",";
 
-# Info on the first (sorted) event in the file
-  split(fer, fera);
-  print "    \"dh.first_run_event\": "fera[1]",";
-  print "    \"dh.first_subrun_event\": "fera[2]",";
-  print "    \"dh.first_event\": "fera[3]",";
-
-# Info on the first (sorted) event in the file
-  split(ler, lera);
-  print "    \"dh.last_run_event\": "lera[1]",";
-  print "    \"dh.last_subrun_event\": "lera[2]",";
-  print "    \"dh.last_event\": "lera[3]",";
-
+# Info on the first (sorted) event in the file, not defined for files with no events.
+  if(eventCount) {
+    split(fer, fera);
+    print "    \"dh.first_run_event\": "fera[1]",";
+    print "    \"dh.first_subrun_event\": "fera[2]",";
+    print "    \"dh.first_event\": "fera[3]",";
+  }
+# Info on the first (sorted) event in the file, not defined for files with no events.
+  if(eventCount) {
+    split(ler, lera);
+    print "    \"dh.last_run_event\": "lera[1]",";
+    print "    \"dh.last_subrun_event\": "lera[2]",";
+    print "    \"dh.last_event\": "lera[3]",";
+  }
 # Info on the first (sorted) subrun in the file
   split(fsr, fsra);
   print "    \"dh.first_run_subrun\": "fsra[1]",";
