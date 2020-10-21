@@ -156,7 +156,7 @@ END {
     print "    \"dh.first_subrun_event\": "fera[2]",";
     print "    \"dh.first_event\": "fera[3]",";
   }
-# Info on the first (sorted) event in the file, not defined for files with no events.
+# Info on the last (sorted) event in the file, not defined for files with no events.
   if(eventCount) {
     split(ler, lera);
     print "    \"dh.last_run_event\": "lera[1]",";
