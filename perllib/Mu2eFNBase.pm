@@ -33,6 +33,9 @@ sub _name {
 # data tier to file family mapping for mu2e-owned datasets
 my %dataTierToFileFamilyMapMu2e =
     (
+     raw => 'phy-raw',
+     rec => 'phy-rec',
+     ntd => 'phy-ntd',
      cnf => 'phy-etc',
      sim => 'phy-sim',
      mix => 'phy-sim',
@@ -46,12 +49,12 @@ my %dataTierToFileFamilyMapMu2e =
 
 my %dataTierToFileFamilyMapUsr =
     (
-     raw => 'tst-cos',
-     rec => 'tst-cos',
-     ntd => 'tst-cos',
-     ext => 'tst-cos',
-     rex => 'tst-cos',
-     xnt => 'tst-cos',
+     raw => 'phy-raw',
+     rec => 'usr-dat',
+     ntd => 'usr-dat',
+     ext => 'usr-dat',
+     rex => 'usr-dat',
+     xnt => 'usr-dat',
      cnf => 'usr-etc',
      sim => 'usr-sim',
      mix => 'usr-sim',
