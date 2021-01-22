@@ -177,7 +177,7 @@ that are accessible by name, or settable with calls like
 
 Fields may contain only alphanumeric characters, hyphens, and
 underscores.  For more details see
-http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml
+https://mu2ewiki.fnal.gov/wiki/FileNames
 
 The Mu2eDSName->parse($dsname) call creates a new object and set
 all the fields based on its argument.  Alternatively, one can create

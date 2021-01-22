@@ -141,7 +141,7 @@ __END__
 =head1 NAME
 
 Mu2eFilename - class to handle the Mu2e file name handling convention.
-See http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for an
+See https://mu2ewiki.fnal.gov/wiki/FileNames for an
 explanation of the basename structure.  In addition to parsing and
 manipulating basenames, this package can also produce standardized
 absolute pathnames for a Mu2e basefilename.  The absolute path
