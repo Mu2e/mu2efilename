@@ -1,6 +1,6 @@
 This package provides Mu2eFilename and Mu2eDSName Perl packages for
 parsing and manipulating Mu2e file and dataset names.  See
-http://mu2e.fnal.gov/atwork/computing/tapeUpload.shtml for file naming
+https://mu2ewiki.fnal.gov/wiki/FileNames for file naming
 conventions.
 
 This package also provides authoritative definitions of standard
