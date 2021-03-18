@@ -79,7 +79,7 @@ EOF
     tier="${fnfields[0]}"
     case "$tier" in
         raw|rec|ntd|ext|rex|xnt) filetype=data ;;
-        cnf|sim|mix|dig|mcs|nts) filetype=mc ;;
+        cnf|sim|mix|dig|dts|mcs|nts) filetype=mc ;;
         *) filetype=other;;
     esac
 
