@@ -9,6 +9,7 @@
 #
 # Andrei Gaponenko, 2020
 
+set -e -u -o pipefail
 
 printJson() {
 
@@ -88,13 +89,17 @@ EOF
 EOF
 
     # The following piece is queried from the filesystem
-    cat<<EOF
-    "file_size": "$(stat -c '%s' $inputfile)",
-EOF
+    #
+    # Note that without assigning the output to an intermediate
+    # variable errors from the called command would not be caught.
+    file_size="$(stat -c '%s' $inputfile)"
 
     # The hash of the file content
+    sha256="$(sha256sum $inputfile|cut -f1 -d' ')"
+
     cat<<EOF
-    "dh.sha256": "$(sha256sum $inputfile|cut -f1 -d' ')",
+    "file_size": "$file_size",
+    "dh.sha256": "$sha256",
 EOF
 
     # A list of parents
