@@ -222,6 +222,9 @@ physics: {
    e1: [ genCountPrint ]
    end_paths: [ e1 ]
 }
+source.readParameterSets: false
+source.compactEventRanges: true
+source.processingMode: RunsAndSubRuns
 EOF
         if mu2e -c $fcl $inputfile > $out; then
             gencount=$(awk '/GenEventCount total:/{print $3}' $out)
