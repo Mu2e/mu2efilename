@@ -11,6 +11,12 @@
 
 set -e -u -o pipefail
 
+if [[ -z "$LD_LIBRARY_PATH" ]] && [[ -n "$CET_PLUGIN_PATH" ]]; then
+    # spack broke file_info_dumper, this is a workaround
+    LD_LIBRARY_PATH=$CET_PLUGIN_PATH
+    export LD_LIBRARY_PATH
+fi
+
 printJson() {
 
     # Because this JSON generation code is meant for grid running,
