@@ -9,13 +9,13 @@
 #
 # Andrei Gaponenko, 2020
 
-set -e -u -o pipefail
-
-if [[ -z "$LD_LIBRARY_PATH" ]] && [[ -n "$CET_PLUGIN_PATH" ]]; then
+if [[ -n "$CET_PLUGIN_PATH" ]]; then
     # spack broke file_info_dumper, this is a workaround
-    LD_LIBRARY_PATH=$CET_PLUGIN_PATH
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}$CET_PLUGIN_PATH
     export LD_LIBRARY_PATH
 fi
+
+set -e -u -o pipefail
 
 printJson() {
 
