@@ -223,7 +223,7 @@ physics: {
    end_paths: [ e1 ]
 }
 source.readParameterSets: false
-source.compactEventRanges: true
+# source.compactEventRanges: true # 2025-07-22: Mu2e DAQ broke this.
 source.processingMode: RunsAndSubRuns
 EOF
         if mu2e -c $fcl $inputfile > $out; then
