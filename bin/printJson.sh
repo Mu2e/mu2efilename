@@ -125,22 +125,24 @@ EOF
             file_info_dumper --event-list "$inputfile" \
                 | awk '
 BEGIN{
+  PROCINFO["sorted_in"] = "@ind_str_asc";
   started=0;
   eventCount=0;
-  subrunCount=0;
   fer="";
   fsr="";
 };
+function array_length(a) {
+  count=0; for(i in a) count++; return count;
+}
 {
   if(started) {
     if(NF==2) {
       # process subrun list
-      ++subrunCount;
       if(!fsr) fsr=$0;
       lsr=$0;
 
-      if((subrunCount < 1+'$maxLengthOfMCSubrunList') || ("'$filetype'" != "mc")) {
-          asr[subrunCount] = $0;
+      if((array_length(asr) < 1+'$maxLengthOfMCSubrunList') || ("'$filetype'" != "mc")) {
+          asr[$0]++;
       }
       else {
           # Empty the subrun list
@@ -188,7 +190,7 @@ END {
   print "    \"runs\": [";
   sep=" ";
   for(i in asr) {
-    split(asr[i],tmp);
+    split(i,tmp);
     print "      " sep " [ " tmp[1] ", " tmp[2] ", \"'$filetype'\" ]";
     sep=",";
   }
